@@ -1,0 +1,47 @@
+:root {
+	--swipe-background: #536482;
+	--swipe-border: #0003;
+	--swipe-color: white;
+}
+
+.swipe {
+	position: fixed;
+	font-size: 28px;
+	opacity: 0;
+	pointer-events: none;
+	transition: left .2s ease-out, right .2s ease-out, opacity .3s ease-in;
+}
+	.swipe.prev {
+		left: -48px;
+	}
+	.swipe.next {
+		right: -48px;
+	}
+	.swipe.show {
+		opacity: 1;
+	}
+		.swipe.show.prev {
+			left: 10px;
+		}
+		.swipe.show.next {
+			right: 10px;
+		}
+
+.swipe > i {
+	color: var(--swipe-color);
+	font-family: FontAwesome !important;
+	font-style: normal;
+}
+	.swipe > i.fa-circle {
+		margin-top: -1px;
+		color: var(--swipe-background);
+	}
+		.swipe > i.fa-circle:before {
+			text-shadow: 0 0 2px var(--swipe-border);
+		}
+	.swipe > i.fa-chevron-left {
+		margin-left: -2px;
+	}
+	.swipe > i.fa-chevron-right {
+		margin-left: 2px;
+	}
