@@ -1,6 +1,7 @@
 if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 	var swipe = {
-		factor: 5,
+		factor: 5,	// Used to determine minimal swiping distance and indicator offset
+
 		pagination: document.querySelector('.action-bar .pagination'),
 		offset: null,
 		pageLinks: null,
@@ -13,7 +14,8 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 		startY: null,
 		deltaX: null,
 		deltaY: null,
-		swiping: false,
+		indicatorShown: false,
+		touchStart: false,
 
 		calcThreshold: function() {
 			this.threshold = Math.min(window.screen.height / this.factor, window.screen.width / this.factor);
@@ -36,9 +38,9 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 		detectSwipe: function() {
 			if (Math.abs(this.deltaX) <= Math.max(Math.abs(this.deltaY), this.threshold)) {
 				this.hideIndicator();
-			} else if (this.prev && this.swiping != this.next && this.deltaX < -this.threshold) {
+			} else if (this.prev && this.indicatorShown != this.next && this.deltaX < -this.threshold) {
 				this.showIndicator(this.prev);
-			} else if (this.next && this.swiping != this.prev && this.deltaX >  this.threshold && this.pageCurrent < this.pageCount) {
+			} else if (this.next && this.indicatorShown != this.prev && this.deltaX >  this.threshold && this.pageCurrent < this.pageCount) {
 				this.showIndicator(this.next);
 			} else {
 				this.hideIndicator();
@@ -59,8 +61,8 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 				return;
 			}
 
-			this.swiping = direction;
-			direction.style.top = Math.max(2 * this.factor, this.startY - this.offset) +'px';
+			this.indicatorShown = direction;
+			direction.style.top = Math.max(10, this.startY - this.offset) +'px';
 			direction.classList.add('show');
 		},
 
@@ -88,12 +90,19 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 			}
 
 			window.ontouchstart = e => {
+				if (e.touches.length !== 1) {
+					return;
+				}
+				this.touchStart = true;
 				this.startX = e.changedTouches[0].screenX;
 				this.startY = e.changedTouches[0].screenY;
-				this.deltaX = this.deltaY = this.swiping = false;
+				this.deltaX = this.deltaY = this.indicatorShown = false;
 			}
 
 			window.ontouchmove = e => {
+				if (!this.touchStart || e.touches.length !== 1) {
+					return;
+				}
 				this.deltaX = this.startX - e.changedTouches[0].screenX;
 				this.deltaY = this.startY - e.changedTouches[0].screenY;
 				this.detectSwipe();
@@ -101,22 +110,24 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 
 			window.ontouchcancel = () => {
 				this.hideIndicator();
+				this.touchStart = false;
 			}
 
 			window.ontouchend = e => {
 				if (Math.abs(this.deltaX) <= Math.max(Math.abs(this.deltaY), this.threshold)) {
 					this.hideIndicator();
-				} else if (this.prev && this.swiping == this.prev && this.deltaX < -this.threshold && this.pageCurrent == 1) {
+				} else if (this.prev && this.indicatorShown == this.prev && this.deltaX < -this.threshold && this.pageCurrent == 1) {
 					if (location.pathname.includes('/viewtopic.php')) {
 						document.querySelector('.crumb:last-of-type a').click();	// Forum index
 					} else {
 						document.querySelector('.crumb:first-of-type a').click();	// Site index
 					}
-				} else if (this.prev && this.swiping == this.prev && this.deltaX < -this.threshold && this.pageCurrent > 1) {
+				} else if (this.prev && this.indicatorShown == this.prev && this.deltaX < -this.threshold && this.pageCurrent > 1) {
 					this.pageJump('prev');
-				} else if (this.next && this.swiping == this.next && this.deltaX >  this.threshold && this.pageCurrent < this.pageCount) {
+				} else if (this.next && this.indicatorShown == this.next && this.deltaX >  this.threshold && this.pageCurrent < this.pageCount) {
 					this.pageJump('next');
 				}
+				this.touchStart = false;
 			}
 
 			console.log('Swipe gestures:', this.prev ? 'Previous' : '', this.next ? '| Next' : ' ');
