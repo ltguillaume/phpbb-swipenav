@@ -90,7 +90,7 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 			}
 
 			window.ontouchstart = e => {
-				if (e.touches.length !== 1) {
+				if (e.touches.length !== 1 || window.visualViewport.scale > 1) {	// Multiple fingers or pinch-zoomed
 					return;
 				}
 				this.touchStart = true;
