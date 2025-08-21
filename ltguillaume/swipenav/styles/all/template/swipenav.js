@@ -36,7 +36,7 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 		},
 
 		detectSwipe: function() {
-			if (Math.abs(this.deltaX) <= Math.max(Math.abs(this.deltaY), this.threshold)) {
+			if (this.deltaY > this.threshold || Math.abs(this.deltaX) <= Math.max(this.deltaY, this.threshold)) {
 				this.hideIndicator();
 			} else if (this.prev && this.indicatorShown != this.next && this.deltaX < -this.threshold) {
 				this.showIndicator(this.prev);
@@ -104,7 +104,7 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 					return;
 				}
 				this.deltaX = this.startX - e.changedTouches[0].screenX;
-				this.deltaY = this.startY - e.changedTouches[0].screenY;
+				this.deltaY = Math.abs(this.startY - e.changedTouches[0].screenY);
 				this.detectSwipe();
 			}
 
@@ -114,7 +114,7 @@ if (phpbb.isTouch && !location.pathname.includes('/index.php')) {
 			}
 
 			window.ontouchend = e => {
-				if (Math.abs(this.deltaX) <= Math.max(Math.abs(this.deltaY), this.threshold)) {
+				if (this.deltaY > this.threshold || Math.abs(this.deltaX) <= Math.max(this.deltaY, this.threshold)) {
 					this.hideIndicator();
 				} else if (this.prev && this.indicatorShown == this.prev && this.deltaX < -this.threshold && this.pageCurrent == 1) {
 					if (location.pathname.includes('/viewtopic.php')) {
