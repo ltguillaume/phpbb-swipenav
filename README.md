@@ -1,3 +1,4 @@
+[Overview](#overview) • [Usage](#usage) • [FAQ](#faq) • [Installation](#installation) • [Settings](#settings) • [Credits](#credits)
 <img src="SWIPENAV.png" align="right">
 
 # Swipe Gestures Navigation for phpBB
@@ -34,7 +35,8 @@ If you are at the top of the page and swipe down a bit during the gesture, Firef
 2. Copy the folder `ltguillaume` into the `ext` folder of your phpBB installation
 3. In the Administration Control Panel, open the tab `Customise` and enable `Swipe Gestures Navigation`
 
-## Colors
+## Settings
+### Colors
 You can alter the colors of the indicators by either changing the values of the color variables inside `swipenav.css`, or by adding the following with your own colors to the main CSS file of your theme(s):
 
 ```
@@ -44,8 +46,7 @@ You can alter the colors of the indicators by either changing the values of the 
 	--swipe-color: white !important;
 }
 ```
-
-## Factor
+### Factor
 If you feel the distance to swipe for the indicators to show up should be tweaked, you can alter the `factor` value inside `swipenav.js` (higher to increase sensitivity, lower to decrease it).
 
 ## Credits
